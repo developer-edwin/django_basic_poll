@@ -1,0 +1,1 @@
+# django_basic_poll
