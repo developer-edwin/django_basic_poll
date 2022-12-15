@@ -1,2 +1,4 @@
 env/
 basicpoll/basicpoll/__pycache__/
+basicpoll/polls/__pycache__
+basicpoll/polls/migrations/__pycache__
