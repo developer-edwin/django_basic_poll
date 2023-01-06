@@ -3,6 +3,7 @@ import datetime
 
 # Django
 from django.test import TestCase
+from django.urls.base import reverse
 from django.utils import timezone
 
 from .models import Question
@@ -36,3 +37,14 @@ class QuestionModelTests(TestCase):
         time = timezone.now() - datetime.timedelta(days=1, minutes=1)
         self.question.pub_date = time
         self.assertIs(self.question.was_published_recently(), False)
+        
+class QuestionIndexViewTests(TestCase):
+
+    def test_no_questions(self):
+        """
+        test_no_questions If no question exist, an appropiate messge is displayed
+        """
+        response = self.client.get(reverse("polls:index"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "No polls found.")
+        self.assertQuerysetEqual(response.context["latest_question_list"], [])
