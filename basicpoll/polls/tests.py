@@ -48,3 +48,13 @@ class QuestionIndexViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "No polls found.")
         self.assertQuerysetEqual(response.context["latest_question_list"], [])
+
+    def test_no_future_question_are_displayed(self):
+        """
+        test_no_future_question_are_displayed This test create a question with the date 30 days in the future and should be not displayed
+        """
+        response = self.client.get(reverse("polls:index"))
+        time = timezone.now() + datetime.timedelta(days=30)
+        future_question = Question(question_text="Cual es el lenguaje mas usado?", pub_date=time)
+        self.assertNotIn(future_question,response.context["latest_question_list"])
+        
