@@ -119,3 +119,22 @@ class QuestionIndexViewTests(TestCase):
         create_question(question_text="Future question 2", days=40)
         response = self.client.get(reverse("polls:index"))
         self.assertQuerysetEqual(response.context["latest_question_list"],[])
+
+class QuestionDetailViewTests(TestCase):
+    def test_future_question(self):
+        """
+        test_future_question The detail view of a question with a pub_date in the future returns a 404 error not found
+        """
+        future_question = create_question(question_text="Future question", days=30)
+        url = reverse("polls:detail", args=(future_question.pk,))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+    
+    def test_past_question(self):
+        """
+        test_past_question The detail view with a question with a pub_date in the past display the question's text
+        """
+        past_question = create_question(question_text="Past question", days=-10)
+        url = reverse("polls:detail", args=(past_question.pk,))
+        response = self.client.get(url)
+        self.assertContains(response, past_question.question_text)
